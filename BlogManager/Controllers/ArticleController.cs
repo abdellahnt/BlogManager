@@ -17,7 +17,7 @@ public class ArticleController : ControllerBase
         _appDbContext = appDbContext;
     }
     
-    [HttpGet]
+    [HttpGet("{articleId}")]
     public async Task<IActionResult> GetArticleById(Guid articleId)
     {
         Article? article = await _appDbContext.Articles.FindAsync(articleId);
@@ -29,7 +29,7 @@ public class ArticleController : ControllerBase
         return Ok(article);
     }
     
-    [HttpGet]
+    [HttpGet("{authorId}")]
     public async Task<IActionResult> GetAllArticlesByAuthorId(Guid authorId)
     {
         List<Article>? articles = await _appDbContext.Articles.Where(x => x.AuthorId == authorId).ToListAsync();
@@ -37,7 +37,7 @@ public class ArticleController : ControllerBase
         return Ok(articles);
     }
 
-    [HttpPost]
+    [HttpPost("{articleId}")]
     public async Task<IActionResult> AddArticle(Guid authorId, String articleTitle, String articleText)
     {
         Article article = new Article
@@ -54,7 +54,7 @@ public class ArticleController : ControllerBase
         return Ok(article);
     }
 
-    [HttpPut]
+    [HttpPut("{articleId}")]
     public async Task<IActionResult> UpdateFullArticle(Guid articleId, Guid authorId, String articleTitle, String articleText)
     {
         Article article = new Article
@@ -71,7 +71,7 @@ public class ArticleController : ControllerBase
         return Ok(article);
     }
 
-    [HttpPatch]
+    [HttpPatch("{articleId}")]
     public async Task<IActionResult> UpdateArticleTitle( Guid articleId,
         [FromBody] JsonPatchDocument<Article>? patchArticle)
     {
@@ -89,7 +89,7 @@ public class ArticleController : ControllerBase
         return Ok(article);
     }
 
-    [HttpDelete]
+    [HttpDelete("{articleId}")]
     public async Task<IActionResult> DeleteArticle(Guid articleId)
     {
         if (await _appDbContext.Articles.AnyAsync(article => article.Id == articleId))

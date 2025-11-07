@@ -37,7 +37,7 @@ public class ArticleController : ControllerBase
         return Ok(articles);
     }
 
-    [HttpPost("{articleId}")]
+    [HttpPost("add-article-to-blog")]
     public async Task<IActionResult> AddArticle(Guid authorId, String articleTitle, String articleText)
     {
         Article article = new Article
@@ -46,7 +46,7 @@ public class ArticleController : ControllerBase
             AuthorId = authorId,
             Title = articleTitle,
             Content = articleText,
-            PublishDate = DateTime.Now
+            PublishDate = DateTime.UtcNow
         };
         await _appDbContext.Articles.AddAsync(article);
         await _appDbContext.SaveChangesAsync();
@@ -63,7 +63,7 @@ public class ArticleController : ControllerBase
             AuthorId = authorId,
             Title = articleTitle,
             Content = articleText,
-            PublishDate = DateTime.Now
+            PublishDate = DateTime.UtcNow
         };
         await _appDbContext.Articles.AddAsync(article);
         await _appDbContext.SaveChangesAsync();
@@ -95,6 +95,8 @@ public class ArticleController : ControllerBase
         if (await _appDbContext.Articles.AnyAsync(article => article.Id == articleId))
         {
             await _appDbContext.Articles.Where(article => article.Id == articleId).ExecuteDeleteAsync();
+            await _appDbContext.SaveChangesAsync();
+            
             return Ok();
         }
         else
